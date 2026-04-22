@@ -3,6 +3,5 @@
     <Project Path="src/cli/cli.csproj" />
     <Project Path="src/shapes/shapes.csproj" />
     <Project Path="src/web-ui/web-ui.csproj" />
-    <Project Path="src/packager/packager.csproj" />
   </Folder>
 </Solution>
