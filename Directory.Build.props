@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'packager'">
+    <!-- Set the publish directory relative to the solution root -->
+    <!-- MSBuildThisFileDirectory points to the directory containing this props file -->
+    <PublishDir>$(MSBuildThisFileDirectory)publish/$(MSBuildProjectName)/</PublishDir>
+  </PropertyGroup>
+</Project>
