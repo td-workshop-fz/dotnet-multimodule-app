@@ -1,6 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- Set the publish directory relative to the solution root -->
-    <PublishDir>$(MSBuildThisFileDirectory)publish/$(MSBuildProjectName)/</PublishDir>
-  </PropertyGroup>
-</Project>

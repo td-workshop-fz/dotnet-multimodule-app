@@ -9,6 +9,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>web_ui</RootNamespace>
+    <PublishDir>../../publish/web-ui/</PublishDir>
   </PropertyGroup>
 
 </Project>
