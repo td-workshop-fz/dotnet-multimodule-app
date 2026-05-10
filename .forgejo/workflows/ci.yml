@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: catthehacker/ubuntu:act-24.04
+      options: -v /var/run/secrets/kubernetes.io/serviceaccount:/var/run/secrets/kubernetes.io/serviceaccount:ro -e KUBERNETES_SERVICE_HOST=10.96.0.1 -e KUBERNETES_SERVICE_PORT=443
 
     steps:
     - name: Checkout Code
