@@ -47,10 +47,6 @@ jobs:
       uses: https://github.com/azure/setup-kubectl@v3
 
     - name: Deploy to Kubernetes
-      env:
-        KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
       run: |
-        mkdir -p ~/.kube
-        echo "$KUBECONFIG_DATA" > ~/.kube/config
         kubectl apply -f k8s/deployment.yaml
         kubectl set image deployment/web-ui web-ui=crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
