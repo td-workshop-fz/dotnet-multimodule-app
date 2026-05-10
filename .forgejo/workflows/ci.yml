@@ -30,5 +30,18 @@ jobs:
     - name: Publish
       run: dotnet publish --no-build --configuration Release
 
-    - name: List repository content
-      run: ls -laR publish
+    - name: Docker Login
+      run: |
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login forgejo.forgejo:3000 -u zhengt --password-stdin
+
+    - name: Docker Build and Push
+      run: |
+        docker build -t forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} .
+        docker tag forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:latest
+        docker push forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }}
+        docker push forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:latest
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl set image deployment/web-ui web-ui=forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
