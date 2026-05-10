@@ -44,7 +44,7 @@ jobs:
         docker push crh.anitazheng.org/zhengt/dotnet-multimodule-app:latest
 
     - name: Setup kubectl
-      uses: azure/setup-kubectl@v3
+      uses: https://github.com/azure/setup-kubectl@v3
 
     - name: Deploy to Kubernetes
       run: |
