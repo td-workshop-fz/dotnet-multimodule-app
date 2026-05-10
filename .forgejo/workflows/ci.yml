@@ -32,16 +32,16 @@ jobs:
 
     - name: Docker Login
       run: |
-        echo "${{ secrets.GITHUB_TOKEN }}" | docker login forgejo.forgejo:3000 -u zhengt --password-stdin
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login forgejo.anitazheng.org -u zhengt --password-stdin
 
     - name: Docker Build and Push
       run: |
-        docker build -t forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} .
-        docker tag forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:latest
-        docker push forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }}
-        docker push forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:latest
+        docker build -t forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} .
+        docker tag forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:latest
+        docker push forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }}
+        docker push forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:latest
 
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f k8s/deployment.yaml
-        kubectl set image deployment/web-ui web-ui=forgejo.forgejo:3000/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
+        kubectl set image deployment/web-ui web-ui=forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
