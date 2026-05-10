@@ -8,8 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: catthehacker/ubuntu:act-24.04
-    env:
-      DOCKER_HOST: tcp://localhost:2375
 
     steps:
     - name: Checkout Code
@@ -33,10 +31,14 @@ jobs:
       run: dotnet publish --no-build --configuration Release
 
     - name: Docker Login
+      env:
+        DOCKER_HOST: tcp://localhost:2375
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login crh.anitazheng.org -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Docker Build and Push
+      env:
+        DOCKER_HOST: tcp://localhost:2375
       run: |
         docker build -t crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} .
         docker tag crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} crh.anitazheng.org/zhengt/dotnet-multimodule-app:latest
