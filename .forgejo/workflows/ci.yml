@@ -49,19 +49,37 @@ jobs:
     - name: Setup kubectl
       uses: https://github.com/azure/setup-kubectl@v3
 
-    - name: Deploy to Kubernetes
+    - name: Docker Build and Push
+      env:
+        DOCKER_HOST: tcp://localhost:2375
       run: |
-        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-        CA_CERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        mkdir -p ~/.kube
+        docker build -t crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} .
+        docker tag crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} crh.anitazheng.org/zhengt/dotnet-multimodule-app:latest
+        docker push crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }}
+        docker push crh.anitazheng.org/zhengt/dotnet-multimodule-app:latest
+
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: linux
+    needs: build-and-test
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup kubectl
+      uses: https://github.com/azure/setup-kubectl@v3
+
+    - name: Deploy
+      run: |
+        SA_PATH=/var/run/secrets/kubernetes.io/serviceaccount
         kubectl config set-cluster local \
           --server=https://10.96.0.1:443 \
-          --certificate-authority=$CA_CERT
+          --certificate-authority=$SA_PATH/ca.crt
         kubectl config set-credentials runner \
-          --token=$SA_TOKEN
-        kubectl config set-context local \
-          --cluster=local \
-          --user=runner
+          --token=$(cat $SA_PATH/token)
+        kubectl config set-context local --cluster=local --user=runner
         kubectl config use-context local
         kubectl apply -f k8s/deployment.yaml --validate=false
-        kubectl set image deployment/web-ui web-ui=crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
+        kubectl set image deployment/web-ui \
+          web-ui=crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} \
+          -n dotnet-app
