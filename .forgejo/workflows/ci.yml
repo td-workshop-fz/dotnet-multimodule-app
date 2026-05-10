@@ -7,7 +7,7 @@ jobs:
     name: Build, Test, and Quality Gate
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/catthehacker/ubuntu:act-24.04
+      image: catthehacker/ubuntu:act-24.04
     env:
       DOCKER_HOST: tcp://localhost:2375
 
@@ -46,4 +46,4 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f k8s/deployment.yaml
-        kubectl set image deployment/web-ui web-ui=forgejo.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
+        kubectl set image deployment/web-ui web-ui=crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
