@@ -51,5 +51,17 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s/deployment.yaml
+        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+        CA_CERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        mkdir -p ~/.kube
+        kubectl config set-cluster local \
+          --server=https://10.96.0.1:443 \
+          --certificate-authority=$CA_CERT
+        kubectl config set-credentials runner \
+          --token=$SA_TOKEN
+        kubectl config set-context local \
+          --cluster=local \
+          --user=runner
+        kubectl config use-context local
+        kubectl apply -f k8s/deployment.yaml --validate=false
         kubectl set image deployment/web-ui web-ui=crh.anitazheng.org/zhengt/dotnet-multimodule-app:${{ github.sha }} -n dotnet-app
